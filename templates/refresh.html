@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+<script>
+    function toggleDot() {
+        $("#dot1").toggleClass("invisible");
+        $("#dot2").toggleClass("invisible");
+    }
+    var updateTimestamp = new Date();
+    function newTimestamp() {
+        updateTimestamp = new Date();
+    }
+
+    // Function to update the live content
+    function updateContent() {
+        timeDiff = Math.round(((new Date()) - updateTimestamp) / 1000); // in seconds
+        let newText = timeDiff
+        if (timeDiff < 60) {
+            newText += " seconds";
+        } else {
+            newText = Math.round(timeDiff/60) + " minutes";
+        }
+
+        $("#last-updated").text(`Last updated ${newText} ago`)
+    }
+    setInterval(() => {
+        updateContent();
+    }, 1500);
+</script>
+{% endblock head %}
+
+{% block body2 %}
+{% endblock body2 %}

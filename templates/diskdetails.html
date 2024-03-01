@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="text-center">
+        <h1>Disk Name: {{diskinfo.device}}</h1>
+        <p>Mount Location: {{diskinfo.mountpoint}}</p>
+        <p>File System: {{diskinfo.fstype}}</p>
+        <p>Mount Options: {{diskinfo.opts}}</p>
+        <p>
+            Read-Only: 
+            {% if 'ro' in diskinfo.opts %}
+                True
+            {% else %}
+                False
+            {% endif %}
+        </p>
+        <p>Max file name length: {{diskinfo.maxfile}} characters</p>
+        <h2>Disk Usage</h2>
+        <p>Total Space: {{diskinfo.total}}</p>
+        <p>Used: {{diskinfo.used}}</p>
+        <p>Free Space: {{diskinfo.free}}</p>
+        <p>Used percentage:  {{diskinfo.percent}}%</p>
+        <a href="/disk" class="btn btn-primary">Return to Summary</a>
+    </div>
+{% endblock body %}

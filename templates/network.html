@@ -1,0 +1,102 @@
+{% extends 'refresh.html' %}
+
+{% block body %}
+    <h1 class="text-center">Network Connections</h1>
+
+    <div class="text-center">
+        <label for="type">Select IP Version</label>
+        <select name="ipV" id="ipV">
+            <option value="" selected>All</option>
+            <option value="4">IPv4</option>
+            <option value="6">IPv6</option>
+        </select>
+    
+        <label for="protocol">Select Protocol</label>
+        <select name="protocol" id="protocol">
+            <option value="inet" selected>All</option>
+            <option value="tcp">TCP</option>
+            <option value="udp">UDP</option>
+        </select>
+    </div>
+    <div class="text-center">
+        <button type="button" id="refreshTable">Refresh table</button>
+    </div>
+    <p id="last-updated" class="text-center">Last updated now</p>
+
+    <table class="table" id="network_table">
+        <thead>
+            <tr>
+                <th>IP Version</th>
+                <th>Protocol</th>
+                <th>Local Address</th>
+                <th>Remote Address</th>
+                <th>Status</th>
+                <th>PID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conn in networkConnections %}
+                {% if conn.ip == 6 %}
+                    {% set laddr = '[' ~ conn.laddr ~ ']:' ~ conn.lport %}
+                    {% set raddr = '[' ~ conn.raddr ~ ']:' ~ conn.rport %}
+                {% else %}
+                    {% set laddr = conn.laddr ~ ':' ~ conn.lport %}
+                    {% set raddr = conn.raddr ~ ':' ~ conn.rport %}
+                {% endif %}
+                <tr class="connRow">
+                    <td>{{ conn.ip }}</td>
+                    <td>{{ conn.protocol }}</td>
+                    <td>{{ laddr if (conn.laddr and conn.lport) else '-' }}</td>
+                    <td>{{ raddr if (conn.raddr and conn.rport) else '-' }}</td>
+                    <td>{{ conn.status }}</td>
+                    <td>{{ conn.pid }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function updateNetworkConn(networkConns) {
+            let tableContent = $("#network_table > tbody")
+            tableContent.empty(); 
+            networkConns.forEach(conn => {
+                if (conn.ip == 6) {
+                    var laddr = '[' + conn.laddr + ']:' + conn.lport
+                    var raddr = '[' + conn.raddr + ']:' + conn.rport
+                } else {
+                    var laddr = conn.laddr + ':' + conn.lport
+                    var raddr = conn.raddr + ':' + conn.rport
+                }
+                tableContent.append(`
+                <tr class="connRow">
+                    <td>${ conn.ip }</td>
+                    <td>${ conn.protocol }</td>
+                    <td>${ (conn.laddr && conn.lport) ? laddr : '-' }</td>
+                    <td>${ (conn.raddr && conn.rport) ? raddr : '-'}</td>
+                    <td>${ conn.status }</td>
+                    <td>${ conn.pid }</td>
+                </tr>
+                `)
+            });
+            updateContent();
+        }
+
+        function getNetworkConn() {
+            let kind = $("#protocol").val() + $("#ipV").val();
+            socket.emit('get_networkConn', kind);
+        }
+
+        const socket = io();
+        setInterval(() => {
+            getNetworkConn();
+        }, 6000);
+        $("#refreshTable").click(() => {
+            getNetworkConn();
+        })
+
+        socket.on('send_networkConn', (networkConns) => {
+            newTimestamp()
+            updateNetworkConn(networkConns)
+        })
+    </script>
+{% endblock body %}

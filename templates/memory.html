@@ -1,0 +1,62 @@
+{% extends 'refresh.html' %}
+
+{% block body %}
+    <h1 class="text-center">Virtual Memory</h1>
+    <p id="last-updated" class="text-center">Last updated now</p>
+    <table class="table">
+        <tr>
+            <th>Total</th>
+            <th>Avaliable</th>
+            <th>Used</th>
+            <th>Used %</th>
+        </tr>
+        <tr>     
+            <td id="virtual-total">{{ memory.virtual.total }}</td>
+            <td id="virtual-avaliable">{{ memory.virtual.avaliable }}</td>
+            <td id="virtual-used">{{ memory.virtual.used }}</td>
+            <td id="virtual-percent">{{ memory.virtual.percent }}%</td>
+        </tr>
+    </table>
+
+    <h1 class="text-center">Swap Memory</h1>
+    <table class="table">
+        <tr>
+            <th>Total</th>
+            <th>Free</th>
+            <th>Used</th>
+            <th>Used %</th>
+        </tr>
+        <tr>     
+            <td id="swap-total">{{ memory.swap.total }}</td>
+            <td id="swap-free">{{ memory.swap.free }}</td>
+            <td id="swap-used">{{ memory.swap.used }}</td>
+            <td id="swap-percent">{{ memory.swap.percent }}%</td>
+        </tr>
+    </table>
+
+    <script>
+        function updateMemory(memory) {
+            $("#virtual-total").html(memory.virtual.total)
+            $("#virtual-avaliable").html(memory.virtual.avaliable)
+            $("#virtual-used").html(memory.virtual.used)
+            $("#virtual-percent").html(memory.virtual.percent + '%')
+
+            $("#swap-total").html(memory.swap.total)
+            $("#swap-free").html(memory.swap.free)
+            $("#swap-used").html(memory.swap.used)
+            $("#swap-percent").html(memory.swap.percent + '%')
+            updateContent()
+        }
+
+        const socket = io();
+        setInterval(() => {
+            socket.emit('get_memory')
+        }, 6000);
+        socket.on('send_memory', (memory) => {
+            newTimestamp()
+            updateMemory(memory)
+        })
+    
+    </script>
+{% endblock body %}
+

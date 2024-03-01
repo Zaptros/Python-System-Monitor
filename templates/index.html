@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="text-center">
+    <h1>Worse Task Manager</h1>
+    <p>This web application uses python to monitor different system resources and displays it on different web pages</p>
+    <h2>Computer Information</h2>
+    <p>Operating System: {{systeminfo.system.system}}</p>
+    <p>Computer Name: {{systeminfo.system.name}}</p>
+    <p>{{systeminfo.system.system}} version: {{systeminfo.system.version}}</p>
+    <p>Architecture: {{systeminfo.system.machine}}</p>
+    <p>Battery Percentage: {{ systeminfo.battery.percent }}%</p>
+    <p>
+        {% if systeminfo.battery.power %}
+            Connected to power
+        {% else %}
+            Not connected to power
+        {% endif %}
+    </p>
+</div>
+{% endblock body %}

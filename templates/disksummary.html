@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h1 class="text-center">Storage Devices</h1>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Total Space</th>
+            <th>Used</th>
+            <th>Used %</th>
+            <th>File System</th>
+            <th>Mount</th>
+        </tr>
+        {% for disk in diskinfo %}
+            <tr>
+                
+                <td><a href="/disk/details?disk={{ disk.name }}">{{ disk.name }}</a></td>
+                <td>{{ disk.total }}</td>
+                <td>{{ disk.used }}</td>
+                <td>{{ disk.percent }}%</td>
+                <td>{{ disk.fstype }}</td>
+                <td>{{ disk.mountpoint }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p class="text-center">Click on the device name for more information</p>
+{% endblock body %}
