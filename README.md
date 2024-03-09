@@ -1,5 +1,5 @@
-# Worse-task-manager
-A web application that shows system resources being used.
+# Python System Monitor
+A web application that shows system resources being used using `psutil` and `flask` for the web application.
 
 ## Setup and Running
 Prerequisits:
