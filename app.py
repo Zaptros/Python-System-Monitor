@@ -28,7 +28,7 @@ os = platform.system()
 
 @app.get("/index")
 def index():
-    return render_template('index.html', title='test', systeminfo=system())
+    return render_template('index.html', title='Python System Monitor', systeminfo=system())
 
 @app.get("/")
 def hello():
